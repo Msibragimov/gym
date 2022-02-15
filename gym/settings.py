@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 import json
@@ -43,8 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.paper',
+    'rest_framework_simplejwt',
+    'rest_framework',
     'apps.account',
+    'apps.config',
 ]
 
 MIDDLEWARE = [
@@ -89,6 +92,18 @@ DATABASES = {
 }
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': os.environ['PSQL_NAME'],
+#         'USER': os.environ['PSQL_USER'],
+#         'PASSWORD': os.environ['PSQL_PASSWORD'],
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -128,5 +143,22 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+    ]
+}
+
+
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'username',
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=3)
+}
 
 AUTH_USER_MODEL = 'account.Account'

@@ -108,35 +108,11 @@ div.desc {
 </style>
 <body>
   <div>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top navbar-default">
-      <button class="w3-dark-grey w3-button w3-xlarge" onclick="w3_open()">☰</button>
-      <a href="" class="navbar-brand" style="margin-left: 43%;">
-        <span class="h2">Website</span>
-      </a>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav username_2 mr-auto">
-          {% if not user.is_authenticated %}
-          <li class="nav-item rounded active">
-            <a class="nav-link border-0" href="{% url 'login' %}"><button type="button" class="btn btn-outline-primary"><i class="fas fa-sign-out-alt">Login</i></button></a>
-          </li><li class="nav-item rounded active">
-            <a class="nav-link border-0 " href="{% url 'register' %}"><button type="button" class="btn btn-outline-primary"><i class="fas fa-sign-out-alt">SignUp</i></button></a>
-          </li>
-        </ul>
-          {% else %}
-        <ul class="navbar-nav username mr-auto">
-          <li class="nav-item rounded active">
-            <a class="nav-link border-0" href="{% url 'logout' %}"><button type="button" class="btn btn-outline-primary"><i class="fas fa-sign-out-alt">Logout</i></button></a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
-    </nav>
-  </div>
   <div class="container">
     <div class="row min-vh-100 flex-column flex-md-row w3-bar-block">
       <div class="w3-sidebar sidenav w3-bar-block w3-border-right" style="display:none; margin-top: 4.5%;" id="mySidebar">
         <button class="w3-dark-grey w3-bar-item w3-large" style="margin-bottom: 10%;" onclick="w3_close()">Close &times;</button>
-        <a class="w3-bar-item w3-button btn" href=""><button type="button" class="btn btn-block btn-primary"><i class="fa fa-home fa-fw"></i><span class="d-none d-md-inline">Home</span></button></a>
+        <a class="w3-bar-item w3-button btn" href="{% url 'homepage' %}"><button type="button" class="btn btn-block btn-primary"><i class="fa fa-home fa-fw"></i><span class="d-none d-md-inline">Home</span></button></a>
         <a class="w3-bar-item w3-button btn" href=""><button type="button" class="btn btn-block btn-primary"><i class="fa fa-book fa-fw"></i><span class="d-none d-md-inline">Create post</span></button></a>
         <a class="w3-bar-item w3-button btn" href=""><button type="button" class="btn btn-block btn-primary"><i class="fa fa-cog fa-fw"></i><span class="d-none d-md-inline">About us</span></button></a>
         <hr>

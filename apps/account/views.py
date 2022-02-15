@@ -1,48 +1,30 @@
-from django.shortcuts import redirect, render
-from django.contrib.auth import authenticate, login, logout
-from apps.account.forms import RegistrationForm, UserForm
-from django.contrib import messages
+from django.contrib.auth.models import Group
+from rest_framework import viewsets, permissions
+from rest_framework.response import Response
+from rest_framework.decorators import action
+
+from apps.account.models import Account
+from apps.account.permissions import AccountPermission
+from apps.account.serializers import AccountSerializer, GroupSerializer
 
 
-def log_user_in(request):
-    if request.method == "POST":
-        form = UserForm(data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.info(request, f"You are now logged in as {username}.")
-                return redirect("homepage")
-            else:
-                messages.error(request,"Invalid username or password.")
-        else:
-            messages.error(request,"Invalid username or password.")
-    else:
-        form = UserForm()
-    return render(request, 'accounts/login.html', context={'form':form})
+class AccountViewSet(viewsets.ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+    permission_classes = [AccountPermission]
+
+    @action(methods=['get'], detail=False, url_path='me')
+    def get_me(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
 
 
-def log_user_out(request):
-    if request.user.is_authenticated:
-        logout(request)
-    return redirect('login')
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-
-def register(request):
-    if request.user.is_authenticated:
-        next_url = request.GET.get('next') or 'homepage'
-        return redirect(next_url)
-    if request.method == 'POST':
-        form = RegistrationForm(request.POST,request.FILES)
-        if form.is_valid():
-            user = form.save(commit=True)
-            user.is_active = True
-            user.save()
-            login(request, user)
-            next_url = request.POST.get('next')
-            return redirect(next_url)
-    else:
-        form = RegistrationForm()
-    return render(request, 'accounts/register.html', context={'form': form, 'next': request.GET.get('next') or 'homepage'})

@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-# Create your models here.
-
 from apps.account.manager import UserManager
+# Create your models here.
 
 
 class Account(AbstractBaseUser, PermissionsMixin):
@@ -12,8 +11,8 @@ class Account(AbstractBaseUser, PermissionsMixin):
     staff = models.BooleanField(default=True) # a admin user; non super-user
     admin = models.BooleanField(default=False) # a superuser
 
-    bio = models.CharField(max_length=800)
-    profile_photo = models.ImageField(upload_to='avatars/', null=True, default='avatar/ava.png')
+    bio = models.CharField(max_length=50)
+    profile_photo = models.ImageField(upload_to='images/', null=True)
 
     objects = UserManager()
 
@@ -43,3 +42,4 @@ class Account(AbstractBaseUser, PermissionsMixin):
     def has_module_perms(self, app_label):
         return self.is_superuser
 
+   
