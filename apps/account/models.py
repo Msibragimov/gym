@@ -5,7 +5,8 @@ from apps.account.manager import UserManager
 
 
 class Account(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(primary_key=True, max_length=15)
+    id = models.AutoField(primary_key=True)
+    username = models.CharField(unique=True, max_length=15)
     email = models.EmailField()
     is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=True) # a admin user; non super-user

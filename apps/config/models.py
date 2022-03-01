@@ -14,10 +14,10 @@ CHOICES =[
 
 class DataDate(models.Model):
     date = models.DateField(default=timezone.now)
-    value = models.FloatField()   
+    value = models.FloatField()
 
 
-class DataTypes(models.Model):
+class DataType(models.Model):
     x_data_type = models.CharField(max_length=50, choices=CHOICES)
     y_data_type = models.CharField(max_length=50, choices=CHOICES)
     x = models.ForeignKey(DataDate, related_name='x_data', null=True, on_delete=models.CASCADE)
@@ -25,5 +25,5 @@ class DataTypes(models.Model):
 
 
 class UserData(models.Model):
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
-    data = models.ForeignKey(DataTypes, on_delete=models.CASCADE, null=True)
+    user_id = models.ForeignKey(Account, on_delete=models.CASCADE)
+    data = models.ForeignKey(DataType, on_delete=models.CASCADE)

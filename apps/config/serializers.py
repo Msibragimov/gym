@@ -1,35 +1,44 @@
 from rest_framework import serializers
-from rest_framework import serializers
-
-from apps.config.models import DataDate, DataTypes, UserData
+from apps.config import models
 
 
 class SpesDataSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DataDate
-        fields = ['date', 'value']     
-        
+        model = models.DataDate
+        fields = ['date', 'value']
+
 
 class MetricsDataPointSerializer(serializers.ModelSerializer):
-    x = SpesDataSerializer()
-    y = SpesDataSerializer()
+    x_data_type = serializers.ChoiceField(choices=models.CHOICES)
+    y_data_type = serializers.ChoiceField(choices=models.CHOICES)
+    x = SpesDataSerializer(many=True)
+    y = SpesDataSerializer(many=True)
 
     class Meta:
-        model = DataTypes
-        fields = ['x_data_type', 'y_data_type', 'x', 'y'] 
-        
+        model = models.DataType
+        fields = ['x_data_type', 'y_data_type', 'x', 'y']
 
-class DataSerializer(serializers.ModelSerializer):
+
+class MainDataSerializer(serializers.ModelSerializer):
     data = MetricsDataPointSerializer()
 
     class Meta:
-        model = UserData
-        fields = ['user', 'data']
-
+        model = models.UserData
+        fields = ['user_id', 'data']
+    
     def create(self, validated_data):
-        data_type = DataTypes.objects.create(**validated_data)
-        return data_type
+        for object in validated_data['data']['x']:
+            models.UserData.objects.create(
+                user_id=validated_data['user_id'],
+                x_data_type=validated_data['data']['x_data_type'],
+                date=object['date'],
+                value=object['value'])
 
-    def to_representation(self, data):
-        representation = super(DataSerializer, self).to_representation(data)
-        return representation
+        for object in validated_data['data']['y']:
+                models.UserData.objects.create(
+                    user_id=validated_data['user_id'],
+                    y_data_type=validated_data['data']['y_data_type'],
+                    date=object['date'],
+                    value=object['value'])
+
+        return validated_data
