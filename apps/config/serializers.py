@@ -35,10 +35,10 @@ class MainDataSerializer(serializers.ModelSerializer):
                 value=object['value'])
 
         for object in validated_data['data']['y']:
-                models.UserData.objects.create(
-                    user_id=validated_data['user_id'],
-                    y_data_type=validated_data['data']['y_data_type'],
-                    date=object['date'],
-                    value=object['value'])
+            models.UserData.objects.create(
+                user_id=validated_data['user_id'],
+                y_data_type=validated_data['data']['y_data_type'],
+                date=object['date'],
+                value=object['value'])
 
         return validated_data
